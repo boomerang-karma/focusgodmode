@@ -1,0 +1,70 @@
+# Option A: Azure Portal creates a SWA linked to this repo and may also add a workflow.
+# Prefer ONE workflow only. If Azure generates azure-static-web-apps-<name>.yml,
+# either delete this file or delete the Azure-generated one and keep this.
+#
+# After creating the SWA in Portal, set the deployment token secret name below
+# to match GitHub → Settings → Secrets (Azure usually adds it automatically when
+# you connect GitHub during create).
+
+name: Azure Static Web Apps CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+
+jobs:
+  build_and_deploy_job:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    name: Build and Deploy Job
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          lfs: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Export Expo web static site
+        run: npm run build:web
+        env:
+          CI: true
+          EXPO_NO_TELEMETRY: 1
+
+      - name: Build And Deploy
+        id: builddeploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          # Portal → your SWA → Manage deployment token
+          # Or use the secret Azure auto-creates when linking GitHub
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: upload
+          app_location: /
+          api_location: ''
+          output_location: dist
+          skip_app_build: true
+          skip_api_build: true
+
+  close_pull_request_job:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    name: Close Pull Request Job
+    steps:
+      - name: Close Pull Request
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: close
