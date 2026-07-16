@@ -6,6 +6,8 @@ import {
   Button,
   Caption,
   Card,
+  GlowBackground,
+  HeroCard,
   Loading,
   ProgressBar,
   SectionHeader,
@@ -77,13 +79,14 @@ export default function HomeScreen() {
   const primaryPreset = band.sessionPresets[0];
 
   return (
+    <GlowBackground>
     <ScrollView
       style={styles.scroll}
       contentContainerStyle={styles.content}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
-          tintColor={colors.saffron}
+          tintColor={colors.saffronLight}
           onRefresh={async () => {
             setRefreshing(true);
             await load();
@@ -92,11 +95,21 @@ export default function HomeScreen() {
         />
       }
     >
-      <Caption style={styles.kicker}>Avadhan Vidya · Age-wise practice</Caption>
+      <Caption style={styles.kicker}>✦ Avadhan Vidya · lit practice</Caption>
       <Title style={styles.greet}>Namaste, {user.displayName}</Title>
-      <Body style={{ marginBottom: spacing.md }}>
+      <Body style={{ marginBottom: spacing.md, color: colors.violetSoft }}>
         {band.icon} {band.title} · {ageDrills.length} drills for {band.ageRange.toLowerCase()}
       </Body>
+
+      <HeroCard>
+        <Caption style={{ color: colors.goldBright, fontWeight: '800' }}>TODAY'S SPARK</Caption>
+        <Title style={{ color: colors.text, marginTop: 4, fontSize: 20 }}>
+          {band.kidFriendly ? 'Play with attention' : 'Hold many streams'}
+        </Title>
+        <Caption style={{ color: colors.textSecondary, marginTop: 6 }}>
+          {band.focus} · ~{band.sessionMinutes} min
+        </Caption>
+      </HeroCard>
 
       <SectionHeader title="Who is practicing?" />
       <AgeBandSummaryCard bandId={bandId} onPressChange={() => setShowAgePicker((v) => !v)} />
@@ -229,15 +242,16 @@ export default function HomeScreen() {
         ))
       )}
 
-      <Caption style={{ marginTop: spacing.lg, textAlign: 'center' }}>
+      <Caption style={{ marginTop: spacing.lg, textAlign: 'center', color: colors.violetSoft }}>
         Engine: {getRegistrySize()} plugins · path: {band.label}
       </Caption>
     </ScrollView>
+    </GlowBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  scroll: { flex: 1, backgroundColor: colors.bg },
+  scroll: { flex: 1, backgroundColor: 'transparent' },
   content: { padding: spacing.md, paddingBottom: spacing.xxl },
   center: {
     flex: 1,
@@ -246,17 +260,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.bg,
   },
   kicker: {
-    color: colors.saffronLight,
+    color: colors.magentaSoft,
     textTransform: 'uppercase',
-    letterSpacing: 1.2,
-    fontWeight: '700',
+    letterSpacing: 1.4,
+    fontWeight: '800',
     marginBottom: 4,
   },
-  greet: { marginBottom: spacing.xs },
+  greet: { marginBottom: spacing.xs, color: colors.text },
   rank: {
-    color: colors.gold,
+    color: colors.goldBright,
     fontSize: 22,
-    fontWeight: '700',
+    fontWeight: '800',
     marginVertical: spacing.sm,
   },
   statsRow: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.sm },

@@ -6,6 +6,7 @@ import {
   Button,
   Caption,
   Card,
+  GlowBackground,
   PillarBadge,
   SectionHeader,
   Title,
@@ -60,9 +61,10 @@ export default function PracticeCatalogScreen() {
   };
 
   return (
+    <GlowBackground>
     <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
       <Title>Practice</Title>
-      <Body style={{ marginBottom: spacing.md }}>
+      <Body style={{ marginBottom: spacing.md, color: colors.violetSoft }}>
         {copy.practiceTitle}. {copy.sessionHint}.
       </Body>
 
@@ -190,6 +192,7 @@ export default function PracticeCatalogScreen() {
         </>
       )}
     </ScrollView>
+    </GlowBackground>
   );
 }
 
@@ -221,18 +224,18 @@ function DrillCard({
 }
 
 const styles = StyleSheet.create({
-  scroll: { flex: 1, backgroundColor: colors.bg },
+  scroll: { flex: 1, backgroundColor: 'transparent' },
   content: { padding: spacing.md, paddingBottom: spacing.xxl },
   filters: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginVertical: spacing.md },
   filterChip: {
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: radius.full,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: colors.border,
     backgroundColor: colors.bgCard,
   },
-  filterOn: { borderColor: colors.saffron, backgroundColor: colors.saffron + '33' },
+  filterOn: { borderColor: colors.magenta, backgroundColor: colors.magenta + '33' },
   row: { flexDirection: 'row', gap: spacing.md, alignItems: 'flex-start' },
   icon: { fontSize: 28 },
   titleRow: {
@@ -242,14 +245,14 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     marginBottom: 4,
   },
-  drillName: { color: colors.text, fontWeight: '700', flex: 1 },
+  drillName: { color: colors.text, fontWeight: '800', flex: 1 },
   starterRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   starter: {
     width: 88,
     padding: spacing.sm,
     borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.border,
+    borderWidth: 1.5,
+    borderColor: colors.gold + '66',
     backgroundColor: colors.bgCard,
     alignItems: 'center',
   },
