@@ -2,23 +2,42 @@ import React, { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Body, Button, Caption, Card, Title } from '../../src/components/ui';
-import { listDrills } from '../../src/modules';
+import { useApp } from '../../src/context/AppContext';
+import {
+  getAgeBand,
+  listDrills,
+  type AgeBandId,
+} from '../../src/modules';
 import { colors, radius, spacing } from '../../src/theme';
 
 export default function SessionBuilderScreen() {
   const router = useRouter();
+  const { user } = useApp();
+  const band = getAgeBand((user?.settings.ageBandId ?? 'adult') as AgeBandId);
+  const maxStreams = Math.max(2, band.maxStreams);
+
   const parallelDrills = useMemo(
-    () => listDrills({ enabledOnly: true, parallelSafeOnly: true }),
-    [],
+    () =>
+      listDrills({ enabledOnly: true, parallelSafeOnly: true }).filter((d) =>
+        band.drillIds.includes(d.meta.id),
+      ),
+    [band.drillIds],
   );
-  const [selected, setSelected] = useState<string[]>(['vyasta_recall', 'digit_span']);
-  const [bell, setBell] = useState(true);
+
+  const defaultPick = band.sessionPresets.find((p) => p.drillIds.length >= 2)?.drillIds ?? [
+    'vyasta_recall',
+    'digit_span',
+  ];
+  const [selected, setSelected] = useState<string[]>(
+    defaultPick.filter((id) => band.drillIds.includes(id)).slice(0, maxStreams),
+  );
+  const [bell, setBell] = useState(band.enableBell);
   const [heckler, setHeckler] = useState(false);
 
   const toggle = (id: string) => {
     setSelected((prev) => {
       if (prev.includes(id)) return prev.filter((x) => x !== id);
-      if (prev.length >= 8) return prev;
+      if (prev.length >= maxStreams) return prev;
       return [...prev, id];
     });
   };
@@ -29,8 +48,8 @@ export default function SessionBuilderScreen() {
       pathname: '/practice/session',
       params: {
         drills: selected.join(','),
-        bell: bell ? '1' : '0',
-        heckler: heckler ? '1' : '0',
+        bell: bell && band.enableBell ? '1' : '0',
+        heckler: heckler && band.enableHeckler ? '1' : '0',
       },
     });
   };
@@ -39,21 +58,35 @@ export default function SessionBuilderScreen() {
     <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
       <Title>Session builder</Title>
       <Body style={{ marginBottom: spacing.md }}>
-        Pick 2–8 parallel-safe streams. Bells and heckler run in the background like live
-        prichchhakas.
+        {band.icon} {band.title} · pick 2–{maxStreams} streams for {band.ageRange.toLowerCase()}.
       </Body>
 
       <Card>
-        <Caption>Selected: {selected.length} / 8</Caption>
-        <Text style={styles.selected}>{selected.map((s) => s.replace(/_/g, ' ')).join(' · ') || '—'}</Text>
-        <View style={styles.row}>
-          <Body style={{ color: colors.text, flex: 1 }}>Background bells</Body>
-          <Switch value={bell} onValueChange={setBell} trackColor={{ true: colors.saffron }} />
-        </View>
-        <View style={styles.row}>
-          <Body style={{ color: colors.text, flex: 1 }}>Heckler interruptions</Body>
-          <Switch value={heckler} onValueChange={setHeckler} trackColor={{ true: colors.saffron }} />
-        </View>
+        <Caption>
+          Selected: {selected.length} / {maxStreams}
+        </Caption>
+        <Text style={styles.selected}>
+          {selected.map((s) => s.replace(/_/g, ' ')).join(' · ') || '—'}
+        </Text>
+        {band.enableBell && (
+          <View style={styles.row}>
+            <Body style={{ color: colors.text, flex: 1 }}>Background bells</Body>
+            <Switch value={bell} onValueChange={setBell} trackColor={{ true: colors.saffron }} />
+          </View>
+        )}
+        {band.enableHeckler && (
+          <View style={styles.row}>
+            <Body style={{ color: colors.text, flex: 1 }}>Heckler interruptions</Body>
+            <Switch
+              value={heckler}
+              onValueChange={setHeckler}
+              trackColor={{ true: colors.saffron }}
+            />
+          </View>
+        )}
+        {!band.enableHeckler && (
+          <Caption style={{ marginTop: spacing.xs }}>Heckler off for this age path.</Caption>
+        )}
       </Card>
 
       {parallelDrills.map((d) => {

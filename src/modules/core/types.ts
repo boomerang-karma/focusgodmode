@@ -177,6 +177,14 @@ export interface UserProfile {
   settings: UserSettings;
 }
 
+export type AgeBandId =
+  | 'child'
+  | 'preteen'
+  | 'teen'
+  | 'young_adult'
+  | 'adult'
+  | 'senior';
+
 export interface UserSettings {
   dailyReminderEnabled: boolean;
   dailyReminderHour: number;
@@ -185,4 +193,9 @@ export interface UserSettings {
   speechEnabled: boolean;
   language: 'en' | 'hi' | 'gu' | 'sa';
   selfScoreSahitya: boolean;
+  /**
+   * Age-wise practice path (child ≈7 vs adult ≈40, etc.).
+   * Filters drills, caps difficulty, and shapes session presets.
+   */
+  ageBandId: AgeBandId;
 }

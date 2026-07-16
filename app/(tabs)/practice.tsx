@@ -10,85 +10,131 @@ import {
   SectionHeader,
   Title,
 } from '../../src/components/ui';
-import { listDrills } from '../../src/modules';
+import { AgeBandPicker, AgeBandSummaryCard } from '../../src/components/AgeBandPicker';
+import { useApp } from '../../src/context/AppContext';
+import {
+  ageBandCopy,
+  getAgeBand,
+  getDrill,
+  listDrills,
+  updateUserSettings,
+  type AgeBandId,
+} from '../../src/modules';
 import { colors, radius, spacing } from '../../src/theme';
-
-const PRESETS = [
-  {
-    id: 'dvi',
-    label: 'Dvi-avadhani (2)',
-    drills: 'vyasta_recall,digit_span',
-    heckler: false,
-  },
-  {
-    id: 'chatur',
-    label: 'Chatur-avadhani (4)',
-    drills: 'vyasta_recall,digit_span,task_switch,arithmetic_load',
-    heckler: true,
-  },
-  {
-    id: 'ashta',
-    label: 'Ashta track (6 streams)',
-    drills:
-      'vyasta_recall,digit_span,verse_recall,task_switch,arithmetic_load,puranapathana',
-    heckler: true,
-  },
-];
 
 export default function PracticeCatalogScreen() {
   const router = useRouter();
+  const { user, setUser } = useApp();
   const [filter, setFilter] = useState<'all' | 'smriti' | 'sahitya' | 'dharana'>('all');
-  const drills = useMemo(() => listDrills({ enabledOnly: true }), []);
+  const [showPicker, setShowPicker] = useState(false);
+
+  const bandId = (user?.settings.ageBandId ?? 'adult') as AgeBandId;
+  const band = getAgeBand(bandId);
+  const copy = ageBandCopy(band);
+
+  const allEnabled = useMemo(() => listDrills({ enabledOnly: true }), []);
+  const drills = useMemo(
+    () => allEnabled.filter((d) => band.drillIds.includes(d.meta.id)),
+    [allEnabled, band.drillIds],
+  );
 
   const filtered = useMemo(() => {
     if (filter === 'all') return drills;
     return drills.filter((d) => d.meta.pillar === filter);
   }, [drills, filter]);
 
-  const byPillar = useMemo(() => {
-    return {
+  const byPillar = useMemo(
+    () => ({
       smriti: drills.filter((d) => d.meta.pillar === 'smriti'),
       sahitya: drills.filter((d) => d.meta.pillar === 'sahitya'),
       dharana: drills.filter((d) => d.meta.pillar === 'dharana'),
-    };
-  }, [drills]);
+    }),
+    [drills],
+  );
+
+  const setBand = async (id: AgeBandId) => {
+    if (!user) return;
+    const settings = await updateUserSettings(user.id, { ageBandId: id });
+    setUser({ ...user, settings });
+    setShowPicker(false);
+  };
 
   return (
     <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
       <Title>Practice</Title>
       <Body style={{ marginBottom: spacing.md }}>
-        {drills.length} drills across three pillars. Each is a plugin — enhance module by module.
+        {copy.practiceTitle}. {copy.sessionHint}.
       </Body>
 
+      <SectionHeader title="Age-wise path" />
+      <AgeBandSummaryCard bandId={bandId} onPressChange={() => setShowPicker((v) => !v)} />
+      {showPicker && (
+        <View style={{ marginTop: spacing.sm }}>
+          <AgeBandPicker value={bandId} onChange={(id) => void setBand(id)} />
+        </View>
+      )}
+
+      <Card style={{ marginTop: spacing.md }}>
+        <Body style={{ color: colors.text }}>{band.description}</Body>
+        <Caption style={{ marginTop: spacing.sm }}>
+          Difficulty capped at level {band.maxDifficultyLevel === 99 ? 'open' : band.maxDifficultyLevel}
+          {band.enableHeckler ? ' · heckler on' : ' · no heckler'}
+          {band.enableBell ? ' · bells ok' : ' · no background bells'}
+        </Caption>
+      </Card>
+
+      <SectionHeader title={band.kidFriendly ? 'Play sessions' : 'Avadhana sessions'} />
       <Card>
-        <Text style={styles.sessionTitle}>🪔 Avadhana Session</Text>
-        <Body style={{ marginBottom: spacing.sm, color: colors.textSecondary }}>
-          Multi-stream practice with background bells, deferred recall, optional heckler.
-        </Body>
-        {PRESETS.map((p) => (
+        {band.sessionPresets.map((p, i) => (
           <Button
             key={p.id}
             label={p.label}
-            variant={p.id === 'dvi' ? 'primary' : 'secondary'}
-            onPress={() =>
+            variant={i === 0 ? 'primary' : 'secondary'}
+            onPress={() => {
+              if (p.drillIds.length === 1) {
+                router.push(`/practice/${p.drillIds[0]}`);
+                return;
+              }
               router.push({
                 pathname: '/practice/session',
                 params: {
-                  drills: p.drills,
-                  bell: '1',
-                  heckler: p.heckler ? '1' : '0',
+                  drills: p.drillIds.join(','),
+                  bell: band.enableBell ? '1' : '0',
+                  heckler: p.heckler && band.enableHeckler ? '1' : '0',
                 },
-              })
-            }
+              });
+            }}
             style={{ marginBottom: spacing.sm }}
           />
         ))}
-        <Button
-          label="Custom session builder"
-          variant="ghost"
-          onPress={() => router.push('/practice/builder')}
-        />
+        {band.maxStreams >= 2 && (
+          <Button
+            label="Custom session builder"
+            variant="ghost"
+            onPress={() => router.push('/practice/builder')}
+          />
+        )}
       </Card>
+
+      <SectionHeader title={band.kidFriendly ? 'Start here' : 'Recommended'} />
+      <View style={styles.starterRow}>
+        {band.starterDrillIds.map((id) => {
+          const d = getDrill(id);
+          if (!d) return null;
+          return (
+            <Pressable
+              key={id}
+              style={styles.starter}
+              onPress={() => router.push(`/practice/${id}`)}
+            >
+              <Text style={{ fontSize: 22 }}>{d.meta.icon}</Text>
+              <Caption style={{ color: colors.text, textAlign: 'center', marginTop: 4 }}>
+                {d.meta.shortName}
+              </Caption>
+            </Pressable>
+          );
+        })}
+      </View>
 
       <View style={styles.filters}>
         {(['all', 'smriti', 'sahitya', 'dharana'] as const).map((f) => (
@@ -103,36 +149,44 @@ export default function PracticeCatalogScreen() {
       </View>
 
       {filter === 'all' ? (
-        (['smriti', 'sahitya', 'dharana'] as const).map((pillar) => (
-          <View key={pillar}>
-            <SectionHeader
-              title={
-                pillar === 'smriti'
-                  ? `Smriti — memory (${byPillar.smriti.length})`
-                  : pillar === 'sahitya'
-                    ? `Sahitya — literary (${byPillar.sahitya.length})`
-                    : `Dharana — attention (${byPillar.dharana.length})`
-              }
-            />
-            {byPillar[pillar].map((drill) => (
+        (['smriti', 'sahitya', 'dharana'] as const).map((pillar) =>
+          byPillar[pillar].length === 0 ? null : (
+            <View key={pillar}>
+              <SectionHeader
+                title={
+                  pillar === 'smriti'
+                    ? `Smriti (${byPillar.smriti.length})`
+                    : pillar === 'sahitya'
+                      ? `Sahitya (${byPillar.sahitya.length})`
+                      : `Dharana (${byPillar.dharana.length})`
+                }
+              />
+              {byPillar[pillar].map((drill) => (
+                <DrillCard
+                  key={drill.meta.id}
+                  drill={drill}
+                  onPress={() => router.push(`/practice/${drill.meta.id}`)}
+                />
+              ))}
+            </View>
+          ),
+        )
+      ) : (
+        <>
+          <SectionHeader title={`${filter} drills`} />
+          {filtered.length === 0 ? (
+            <Card>
+              <Body>{copy.emptyCatalog}</Body>
+            </Card>
+          ) : (
+            filtered.map((drill) => (
               <DrillCard
                 key={drill.meta.id}
                 drill={drill}
                 onPress={() => router.push(`/practice/${drill.meta.id}`)}
               />
-            ))}
-          </View>
-        ))
-      ) : (
-        <>
-          <SectionHeader title={`${filter} drills`} />
-          {filtered.map((drill) => (
-            <DrillCard
-              key={drill.meta.id}
-              drill={drill}
-              onPress={() => router.push(`/practice/${drill.meta.id}`)}
-            />
-          ))}
+            ))
+          )}
         </>
       )}
     </ScrollView>
@@ -157,7 +211,7 @@ function DrillCard({
           </View>
           <Caption numberOfLines={2}>{drill.meta.description}</Caption>
           <Caption style={{ marginTop: 4 }}>
-            Phase {drill.meta.phase} · {drill.difficultyLadder.length} levels
+            {drill.difficultyLadder.length} levels
             {drill.meta.parallelSafe ? ' · parallel-safe' : ' · solo-first'}
           </Caption>
         </View>
@@ -169,12 +223,6 @@ function DrillCard({
 const styles = StyleSheet.create({
   scroll: { flex: 1, backgroundColor: colors.bg },
   content: { padding: spacing.md, paddingBottom: spacing.xxl },
-  sessionTitle: {
-    color: colors.gold,
-    fontSize: 18,
-    fontWeight: '700',
-    marginBottom: spacing.xs,
-  },
   filters: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginVertical: spacing.md },
   filterChip: {
     paddingHorizontal: 12,
@@ -195,4 +243,14 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   drillName: { color: colors.text, fontWeight: '700', flex: 1 },
+  starterRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  starter: {
+    width: 88,
+    padding: spacing.sm,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.bgCard,
+    alignItems: 'center',
+  },
 });

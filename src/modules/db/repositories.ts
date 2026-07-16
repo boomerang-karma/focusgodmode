@@ -27,6 +27,7 @@ const DEFAULT_SETTINGS: UserSettings = {
   speechEnabled: true,
   language: 'en',
   selfScoreSahitya: true,
+  ageBandId: 'adult',
 };
 
 // ─── Users ───────────────────────────────────────────────────────────────────

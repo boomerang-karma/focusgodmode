@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Switch, View } from 'react-native';
 import { Body, Caption, Card, Input, SectionHeader, Title } from '../../src/components/ui';
+import { AgeBandPicker } from '../../src/components/AgeBandPicker';
 import { useApp } from '../../src/context/AppContext';
 import {
   cancelDailyReminder,
   ensureLocalUser,
+  getAgeBand,
   getRegistrySize,
   scheduleDailyReminder,
   updateUserSettings,
+  type AgeBandId,
 } from '../../src/modules';
 import { colors, spacing } from '../../src/theme';
 
@@ -16,6 +19,9 @@ export default function SettingsScreen() {
   const [name, setName] = useState(user?.displayName ?? '');
 
   if (!user) return null;
+
+  const bandId = (user.settings.ageBandId ?? 'adult') as AgeBandId;
+  const band = getAgeBand(bandId);
 
   const toggle = async (
     key: 'dailyReminderEnabled' | 'soundEnabled' | 'speechEnabled',
@@ -65,6 +71,23 @@ export default function SettingsScreen() {
         <Caption>Rank: {user.rank}</Caption>
       </Card>
 
+      <SectionHeader title="Age-wise practice path" />
+      <Card>
+        <Caption style={{ marginBottom: spacing.sm }}>
+          Current: {band.icon} {band.title} ({band.ageRange}) — e.g. age {band.exampleAge}
+        </Caption>
+        <AgeBandPicker
+          value={bandId}
+          onChange={(id) =>
+            void updateUserSettings(user.id, { ageBandId: id }).then((settings) =>
+              setUser({ ...user, settings }),
+            )
+          }
+          compact
+        />
+        <Caption style={{ marginTop: spacing.sm }}>{band.description}</Caption>
+      </Card>
+
       <SectionHeader title="Practice" />
       <Card>
         <Row
@@ -88,11 +111,10 @@ export default function SettingsScreen() {
       <Card>
         <Body style={{ color: colors.text }}>Registered drills: {getRegistrySize()}</Body>
         <Caption style={{ marginTop: spacing.sm }}>
-          core · drills · session · tracking · content · audio · srs · db · notifications
+          core · drills · session · tracking · content · audio · srs · db · notifications · age
         </Caption>
         <Caption style={{ marginTop: spacing.xs }}>
-          Full catalog + Avadhana engine (deferred recall, bells, heckler, interference). Phase 3:
-          Supabase sync. Phase 4: live rooms + AI judge.
+          Age paths shape drill catalog, stream caps, and difficulty. Phase 3: Supabase sync.
         </Caption>
       </Card>
 

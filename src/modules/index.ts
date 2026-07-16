@@ -31,3 +31,4 @@ export * from './audio';
 export * from './srs';
 export * from './db';
 export * from './notifications';
+export * from './age';

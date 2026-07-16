@@ -6,8 +6,11 @@ import { Body, Button, Caption, Card, Loading, Title } from '../../src/component
 import { useApp } from '../../src/context/AppContext';
 import {
   appendEvent,
+  capDifficultyLevel,
+  getAgeBand,
   getDrill,
   getDrillProgress,
+  isDrillAllowedForAge,
   requireDrill,
   saveSessionSummary,
   sessionOrchestrator,
@@ -24,11 +27,13 @@ export default function SoloDrillScreen() {
   const [level, setLevel] = useState(0);
 
   const drill = drillId ? getDrill(drillId) : undefined;
+  const band = getAgeBand(user?.settings.ageBandId);
 
   useEffect(() => {
     if (!user || !drillId) return;
     void getDrillProgress(user.id).then((p) => {
-      setLevel(p[drillId]?.difficultyLevel ?? 0);
+      const raw = p[drillId]?.difficultyLevel ?? 0;
+      setLevel(capDifficultyLevel(raw, user.settings.ageBandId ?? 'adult'));
     });
   }, [user, drillId]);
 
@@ -45,15 +50,22 @@ export default function SoloDrillScreen() {
   const start = async () => {
     if (!user) return;
     try {
+      if (!isDrillAllowedForAge(drillId, user.settings.ageBandId ?? 'adult')) {
+        setError(`This drill is outside the ${band.title} age path. Change path in Practice or Settings.`);
+        setPhase('error');
+        return;
+      }
       const d = requireDrill(drillId);
-      const difficulty = d.difficultyLadder[Math.min(level, d.difficultyLadder.length - 1)];
+      const capped = capDifficultyLevel(level, user.settings.ageBandId ?? 'adult');
+      const difficulty =
+        d.difficultyLadder[Math.min(capped, d.difficultyLadder.length - 1)];
       await sessionOrchestrator.start(
         user.id,
         {
           mode: 'solo',
           drillIds: [drillId],
           streamCount: 1,
-          enableBell: drillId === 'ghanta_ganana',
+          enableBell: drillId === 'ghanta_ganana' && band.enableBell,
           enableHeckler: false,
         },
         { [drillId]: difficulty },
@@ -115,18 +127,29 @@ export default function SoloDrillScreen() {
 
   if (!user) return <Loading />;
 
+  const levelLabel =
+    drill.difficultyLadder[Math.min(level, drill.difficultyLadder.length - 1)]?.label ??
+    `L${level}`;
+
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg, padding: spacing.md }}>
       <Title>
         {drill.meta.icon} {drill.meta.name}
       </Title>
       <Caption style={{ marginVertical: spacing.sm }}>
-        {drill.meta.pillar.toUpperCase()} · Level {level} · {drill.difficultyLadder[level]?.label}
+        {drill.meta.pillar.toUpperCase()} · Level {level} · {levelLabel}
+      </Caption>
+      <Caption style={{ marginBottom: spacing.sm }}>
+        {band.icon} {band.title} path · difficulty capped for {band.ageRange.toLowerCase()}
       </Caption>
       <Card>
         <Body style={{ color: colors.text }}>{drill.meta.description}</Body>
       </Card>
-      <Button label="Begin" onPress={() => void start()} style={{ marginTop: spacing.md }} />
+      <Button
+        label={band.kidFriendly ? 'Play' : 'Begin'}
+        onPress={() => void start()}
+        style={{ marginTop: spacing.md }}
+      />
       <Button label="Cancel" variant="ghost" onPress={() => router.back()} />
     </View>
   );

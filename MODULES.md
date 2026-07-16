@@ -41,6 +41,12 @@ Template: `src/modules/drills/_template.ts`
 - `verses.json`
 - `purana-quiz.json`
 
+## Age module (`src/modules/age/`)
+
+Six paths: child (~7) · preteen · teen · young adult · adult (~40) · senior.  
+Filters drills, caps difficulty/streams, heckler/bells, session presets.  
+Stored on `UserSettings.ageBandId`.
+
 ## Next module-sized PRs
 
 1. Real `bell.mp3` + voice recording in ashu-kavitva (`audio/`)
