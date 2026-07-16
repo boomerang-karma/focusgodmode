@@ -1,5 +1,7 @@
 # Azure Static Web App: ambitious-sand-042c1960f
 # Pre-builds Expo web → dist/, then uploads (skip Oryx).
+# With skip_app_build: true, app_location must be the folder that already
+# contains index.html (dist/), not the repo root.
 
 name: Azure Static Web Apps CI/CD
 
@@ -38,6 +40,11 @@ jobs:
           CI: true
           EXPO_NO_TELEMETRY: 1
 
+      - name: Verify dist output
+        run: |
+          ls -la dist/
+          test -f dist/index.html
+
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -45,11 +52,10 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_SAND_042C1960F }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: upload
-          app_location: /
+          # Prebuilt static site — point app_location at dist (has index.html)
+          app_location: dist
           api_location: ''
-          output_location: dist
           skip_app_build: true
-          skip_api_build: true
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
