@@ -1,0 +1,44 @@
+{
+  "name": "avadhan-vidya",
+  "version": "1.1.0",
+  "main": "expo-router/entry",
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "date-fns": "^4.4.0",
+    "drizzle-orm": "^0.45.2",
+    "expo": "~57.0.6",
+    "expo-av": "^16.0.8",
+    "expo-constants": "~57.0.5",
+    "expo-font": "~57.0.1",
+    "expo-haptics": "~57.0.1",
+    "expo-linking": "~57.0.3",
+    "expo-notifications": "~57.0.5",
+    "expo-router": "~57.0.6",
+    "expo-speech": "~57.0.1",
+    "expo-sqlite": "~57.0.1",
+    "expo-status-bar": "~57.0.1",
+    "expo-system-ui": "~57.0.1",
+    "react": "19.2.3",
+    "react-native": "0.86.0",
+    "react-native-gesture-handler": "~2.32.0",
+    "react-native-reanimated": "4.5.0",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "4.25.2",
+    "uuid": "^14.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.2",
+    "@types/uuid": "^10.0.0",
+    "drizzle-kit": "^0.31.10",
+    "typescript": "~6.0.3"
+  },
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "typecheck": "tsc --noEmit",
+    "smoke": "node scripts/smoke-drills.mjs"
+  },
+  "private": true
+}

@@ -1,0 +1,55 @@
+{
+  "id": "samasya-prompts",
+  "version": 1,
+  "language": "en",
+  "items": [
+    {
+      "lastLine": "And then the elephant recited the alphabet.",
+      "hint": "Set a scene where this becomes sensible (dream, circus, parable…)."
+    },
+    {
+      "lastLine": "The clock apologized for being early.",
+      "hint": "Personify time or invent a reason clocks feel guilt."
+    },
+    {
+      "lastLine": "She paid the river with a single coin.",
+      "hint": "Myth, ferry, or metaphor of crossing."
+    },
+    {
+      "lastLine": "The silence wore a crown of thorns.",
+      "hint": "Sacred or ironic image of quiet suffering."
+    },
+    {
+      "lastLine": "Tomorrow borrowed yesterday's shoes.",
+      "hint": "Cycle of time, habit, or karma."
+    },
+    {
+      "lastLine": "The map refused to show the way home.",
+      "hint": "Lost traveler, identity, or inner journey."
+    },
+    {
+      "lastLine": "He taught the mountain how to kneel.",
+      "hint": "Humility, devotion, or geological metaphor."
+    },
+    {
+      "lastLine": "The candle debated the sun at noon.",
+      "hint": "Small vs great, ego vs truth."
+    },
+    {
+      "lastLine": "Rain fell upward into the monk's bowl.",
+      "hint": "Miracle, paradox, or reverse-world image."
+    },
+    {
+      "lastLine": "The question answered itself and left.",
+      "hint": "Insight that arrives complete."
+    },
+    {
+      "lastLine": "A crow wore the peacock's pride.",
+      "hint": "Imitation, vanity, fable."
+    },
+    {
+      "lastLine": "The ink remembered what the hand forgot.",
+      "hint": "Writing, history, subconscious."
+    }
+  ]
+}

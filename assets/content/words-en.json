@@ -1,0 +1,19 @@
+{
+  "id": "words-en",
+  "version": 1,
+  "language": "en",
+  "words": [
+    "lotus", "river", "temple", "flame", "mirror", "bell", "scroll", "peak",
+    "moon", "seed", "drum", "cloud", "stone", "vine", "sword", "pearl",
+    "ocean", "forest", "garden", "palace", "bridge", "tower", "gate", "well",
+    "star", "sun", "wind", "rain", "snow", "dust", "gold", "silver",
+    "tiger", "eagle", "deer", "snake", "horse", "crane", "lion", "owl",
+    "mango", "rice", "spice", "honey", "milk", "bread", "salt", "fruit",
+    "book", "pen", "ink", "page", "word", "song", "dance", "path",
+    "truth", "peace", "courage", "wisdom", "grace", "power", "silence", "light",
+    "shadow", "dream", "memory", "time", "space", "breath", "heart", "mind",
+    "hand", "eye", "voice", "ear", "foot", "crown", "ring", "cloth",
+    "water", "earth", "fire", "air", "ether", "karma", "dharma", "yoga",
+    "mantra", "yantra", "guru", "shishya", "ashram", "sadhana", "bhakti", "jnana"
+  ]
+}

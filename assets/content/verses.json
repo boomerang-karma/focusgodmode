@@ -1,0 +1,79 @@
+{
+  "id": "verses-classic",
+  "version": 1,
+  "language": "multi",
+  "items": [
+    {
+      "id": "v1",
+      "title": "Gayatri (opening)",
+      "language": "sa",
+      "lines": [
+        "Om bhur bhuvah svah",
+        "Tat savitur varenyam",
+        "Bhargo devasya dhimahi",
+        "Dhiyo yo nah prachodayat"
+      ],
+      "translation": "We meditate on the glory of the Creator who has created the universe; may He enlighten our minds."
+    },
+    {
+      "id": "v2",
+      "title": "Karmanye vadhikaraste",
+      "language": "sa",
+      "lines": [
+        "Karmanye vadhikaraste",
+        "Ma phaleshu kadachana",
+        "Ma karma-phala-hetur bhur",
+        "Ma te sango 'stv akarmani"
+      ],
+      "translation": "You have a right to action alone, never to its fruits."
+    },
+    {
+      "id": "v3",
+      "title": "Lokah samastah",
+      "language": "sa",
+      "lines": [
+        "Lokah samastah sukhino bhavantu",
+        "Sarvesham svastir bhavatu",
+        "Sarvesham shantir bhavatu",
+        "Sarvesham purnam bhavatu"
+      ],
+      "translation": "May all beings everywhere be happy and free."
+    },
+    {
+      "id": "v4",
+      "title": "English quatrain — attention",
+      "language": "en",
+      "lines": [
+        "One mind can hold a single thread",
+        "Two streams divide the careful head",
+        "Four become a living art",
+        "Eight still leave a quiet heart"
+      ],
+      "translation": "A practice verse on multi-stream attention."
+    },
+    {
+      "id": "v5",
+      "title": "Truth is one",
+      "language": "en",
+      "lines": [
+        "Truth is one",
+        "The wise call it by many names",
+        "Paths may differ in the climb",
+        "The summit sees the same"
+      ],
+      "translation": "Ekamsat vipra bahudha vadanti — rendered in English."
+    },
+    {
+      "id": "v6",
+      "title": "Silence",
+      "language": "en",
+      "lines": [
+        "Before the word, the breath",
+        "Before the breath, the still",
+        "Hold the still within the noise",
+        "And noise will do your will"
+      ],
+      "translation": "On dharana and silence."
+    }
+  ]
+}

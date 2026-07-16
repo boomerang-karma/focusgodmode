@@ -1,0 +1,91 @@
+{
+  "id": "purana-quiz-lite",
+  "version": 1,
+  "language": "en",
+  "items": [
+    {
+      "id": "q1",
+      "question": "How many principal Puranas are traditionally counted?",
+      "options": ["12", "18", "24", "108"],
+      "answer": 1,
+      "topic": "purana"
+    },
+    {
+      "id": "q2",
+      "question": "Who is the author traditionally associated with the Mahabharata?",
+      "options": ["Valmiki", "Vyasa", "Kalidasa", "Panini"],
+      "answer": 1,
+      "topic": "itihasa"
+    },
+    {
+      "id": "q3",
+      "question": "Ashtavadhana literally means practice with how many streams?",
+      "options": ["2", "4", "8", "100"],
+      "answer": 2,
+      "topic": "avadhana"
+    },
+    {
+      "id": "q4",
+      "question": "Shatavadhan refers to handling how many tasks?",
+      "options": ["8", "16", "100", "1000"],
+      "answer": 2,
+      "topic": "avadhana"
+    },
+    {
+      "id": "q5",
+      "question": "In Ashtavadhana, 'Samasya-purti' is primarily about:",
+      "options": ["Counting bells", "Completing a verse", "Chess moves", "Arithmetic"],
+      "answer": 1,
+      "topic": "avadhana"
+    },
+    {
+      "id": "q6",
+      "question": "The Ramayana is traditionally attributed to:",
+      "options": ["Vyasa", "Valmiki", "Tulsidas only", "Kalidasa"],
+      "answer": 1,
+      "topic": "itihasa"
+    },
+    {
+      "id": "q7",
+      "question": "Nishedhakshari forbids certain:",
+      "options": ["Emotions", "Letters/sounds", "Gestures", "Ragas only"],
+      "answer": 1,
+      "topic": "avadhana"
+    },
+    {
+      "id": "q8",
+      "question": "Datta-padi provides the poet with:",
+      "options": ["A raga", "Four given words", "A chess problem", "Bell counts"],
+      "answer": 1,
+      "topic": "avadhana"
+    },
+    {
+      "id": "q9",
+      "question": "Working memory span is most closely trained by which pillar?",
+      "options": ["Only Sahitya", "Smriti & Dharana", "Only physical yoga", "Astrology"],
+      "answer": 1,
+      "topic": "practice"
+    },
+    {
+      "id": "q10",
+      "question": "Ghanta-ganana trains:",
+      "options": ["Background counting under load", "Sanskrit grammar only", "Sleep quality", "Finger strength"],
+      "answer": 0,
+      "topic": "practice"
+    },
+    {
+      "id": "q11",
+      "question": "Who is known for a famous historical Shatavadhan demonstration in 1887?",
+      "options": ["Kalidasa", "Shrimad Rajchandra", "Panini", "Chanakya"],
+      "answer": 1,
+      "topic": "history"
+    },
+    {
+      "id": "q12",
+      "question": "Aprastuta-prasanga is best described as:",
+      "options": ["Irrelevant witty interruptions", "Silent meditation", "Fast typing", "Drum solo"],
+      "answer": 0,
+      "topic": "avadhana"
+    }
+  ]
+}
